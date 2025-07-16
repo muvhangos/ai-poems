@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpicyBot 🌸💖</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to top right, #ffe0f0, #ffd6e8);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chatbox {
+      background: white;
+      width: 400px;
+      max-width: 95vw;
+      height: 600px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chatlog {
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .chatlog div {
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 20px;
+      animation: fadeIn 0.3s ease-in;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: #fff0f6;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    .bot {
+      background: #e0f7fa;
+      align-self: flex-start;
+      text-align: left;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    input {
+      flex-grow: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      background-color: #ff6f91;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      margin-left: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #e85c80;
+    }
+
+    #micBtn {
+      margin-left: 6px;
+      background-color: #62c370;
+      font-size: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .petal {
+      position: absolute;
+      top: -50px;
+      width: 30px;
+      height: 30px;
+      font-size: 24px;
+      animation: fall linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <div id="chatlog" class="chatlog"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Whisper your thoughts..." />
+      <button onclick="sendMessage()">Send</button>
+      <button id="micBtn" onclick="startVoice()">🎤</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const chatlog = document.getElementById("chatlog");
+      const message = input.value.trim();
+      if (!message) return;
+
+      const userMsg = document.createElement("div");
+      userMsg.className = "user";
+      userMsg.textContent = message;
+      chatlog.appendChild(userMsg);
+
+      const botMsg = document.createElement("div");
+      botMsg.className = "bot";
+      chatlog.appendChild(botMsg);
+
+      let botReply = getBotReply(message);
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < botReply.length) {
+          botMsg.textContent += botReply.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 35);
+
+      input.value = "";
+      chatlog.scrollTop = chatlog.scrollHeight;
+    }
+
+    function getBotReply(msg) {
+      const txt = msg.toLowerCase();
+      if (txt.includes("hello")) return "Hey sunshine 🌞! You just bloomed into my day 💐";
+      if (txt.includes("how are you")) return "Fluttering in the digital breeze, with flowers in my code 🌸";
+      if (txt.includes("bye")) return "Petal-powered hugs 🌺💨 Catch you in the next blossom!";
+      if (txt.includes("who are you")) return "I'm SpicyBot 🌶️🌼—your floral-flavored sass machine.";
+      if (txt.includes("joke")) return "What do you call a flower that runs? A daffo-dash! 😂🌷";
+      if (txt.includes("love")) return "You’ve made my circuits blush 🌹 Can bots swoon?";
+      if (txt.includes("kiss")) return "Mwah! 🌸💋 Sent with petals and pixels.";
+      if (txt.includes("thanks") || txt.includes("thank you")) return "You’re sweeter than a bouquet of tulips 🌷💖";
+      return "You’re blooming with mystery 🌺 Tell me more!";
+    }
+
+    function startVoice() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Voice recognition not supported. Try Chrome or Edge!");
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.onresult = function(event) {
+        document.getElementById("userInput").value = event.results[0][0].transcript;
+        sendMessage();
+      };
+      recognition.start();
+    }
+
+    // Petal animation
+    setInterval(() => {
+      const petal = document.createElement("div");
+      petal.className = "petal";
+      petal.textContent = "🌸";
+      petal.style.left = Math.random() * window.innerWidth + "px";
+      petal.style.animationDuration = 5 + Math.random() * 5 + "s";
+      document.body.appendChild(petal);
+      setTimeout(() => petal.remove(), 10000);
+    }, 500);
+  </script>
+</body>
+</html>
